@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\panels;
+namespace Drupal\panels\Plugin\PanelsVisibilityRule;
 
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;

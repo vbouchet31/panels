@@ -5,11 +5,11 @@ namespace Drupal\panels\Annotation;
 use Drupal\Component\Annotation\Plugin;
 
 /**
- * Defines a panels visibility rule annotation object.
+ * Defines a panels access annotation object.
  *
  * @Annotation
  */
-class PanelsVisibilityRule extends Plugin {
+class PanelsAccess extends Plugin {
 
   /**
    * The plugin ID.
@@ -19,7 +19,7 @@ class PanelsVisibilityRule extends Plugin {
   public $id;
 
   /**
-   * The human-readable name of the panels visibility rule.
+   * The human-readable name of the panels access.
    *
    * @var \Drupal\Core\Annotation\Translation
    *

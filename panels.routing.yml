@@ -19,10 +19,10 @@ panels.edit_block:
     _title: 'Edit block'
   requirements:
     _ctools_access: 'machine_name'
-panels.edit_block_visibility_rule:
-  path: '/admin/structure/panels/{tempstore_id}/{machine_name}/edit/{block_id}/visibility_rule'
+panels.edit_block_access:
+  path: '/admin/structure/panels/{tempstore_id}/{machine_name}/edit/{block_id}/access'
   defaults:
-    _form: '\Drupal\panels\Form\PanelsEditBlockVisibilityRuleForm'
+    _form: '\Drupal\panels\Form\PanelsEditBlockAccessForm'
     _title: 'Edit block visibility rule'
   requirements:
     _ctools_access: 'machine_name'

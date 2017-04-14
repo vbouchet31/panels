@@ -1,18 +1,18 @@
 <?php
 
-namespace Drupal\panels\Plugin\PanelsVisibilityRule;
+namespace Drupal\panels\Plugin\PanelsAccess;
 
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
 
 /**
- * Manager for Panels Visibility Rule plugins.
+ * Manager for Panels Access plugins.
  */
-class PanelsVisibilityRuleManager extends DefaultPluginManager {
+class PanelsAccessManager extends DefaultPluginManager {
 
   /**
-   * Constructs a new PanelsVisibilityRuleManager.
+   * Constructs a new PanelsAccessManager.
    *
    * @param \Traversable $namespaces
    *   An object that implements \Traversable which contains the root paths
@@ -23,10 +23,10 @@ class PanelsVisibilityRuleManager extends DefaultPluginManager {
    *   The module handler.
    */
   public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler) {
-    parent::__construct('Plugin/PanelsVisibilityRule', $namespaces, $module_handler, 'Drupal\panels\Plugin\PanelsVisibilityRule\PanelsVisibilityRuleInterface', 'Drupal\panels\Annotation\PanelsVisibilityRule');
+    parent::__construct('Plugin/PanelsAccess', $namespaces, $module_handler, 'Drupal\panels\Plugin\PanelsAccess\PanelsAccessInterface', 'Drupal\panels\Annotation\PanelsAccess');
 
-    $this->alterInfo('panels_visibility_rule_info');
-    $this->setCacheBackend($cache_backend, 'panels_visibility_rule');
+    $this->alterInfo('panels_access_info');
+    $this->setCacheBackend($cache_backend, 'panels_access');
   }
 
 }

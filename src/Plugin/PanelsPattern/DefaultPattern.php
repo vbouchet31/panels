@@ -130,8 +130,8 @@ class DefaultPattern extends PluginBase implements PanelsPatternInterface, Conta
   /**
    * {@inheritdoc}
    */
-  public function getBlockEditVisibilityRuleUrl($tempstore_id, $machine_name, $block_id, $destination = NULL) {
-    return Url::fromRoute('panels.edit_block_visibility_rule', [
+  public function getBlockEditAccessUrl($tempstore_id, $machine_name, $block_id, $destination = NULL) {
+    return Url::fromRoute('panels.edit_block_access', [
       'tempstore_id' => $tempstore_id,
       'machine_name' => $machine_name,
       'block_id' => $block_id,

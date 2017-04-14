@@ -10,15 +10,15 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Provides a form for editing a block visibility rule.
+ * Provides a form for editing a block access rule.
  */
-class PanelsEditBlockVisibilityRuleForm extends FormBase {
+class PanelsEditBlockAccessForm extends FormBase {
 
   /**
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'panels_edit_block_visibility_rule_form';
+    return 'panels_edit_block_access_form';
   }
 
   /**

@@ -9,7 +9,7 @@ use Drupal\Core\Plugin\PluginFormInterface;
 /**
  * Provides an interface for a Panels Visibility Rule.
  */
-interface PanelsVisibilityRuleInterface extends PluginInspectionInterface, ConfigurablePluginInterface, PluginFormInterface {
+interface PanelsAccessInterface extends PluginInspectionInterface, ConfigurablePluginInterface, PluginFormInterface {
 
   /**
    * Check if the block is visible.

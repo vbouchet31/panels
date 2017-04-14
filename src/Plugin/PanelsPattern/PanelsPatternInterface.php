@@ -104,7 +104,7 @@ interface PanelsPatternInterface extends PluginInspectionInterface {
   public function getBlockDeleteUrl($tempstore_id, $machine_name, $block_id, $destination = NULL);
 
   /**
-   * Gets the block edit visibility rule url.
+   * Gets the block edit access url.
    *
    * @param string $tempstore_id
    *   The tempstore identifier.
@@ -117,6 +117,6 @@ interface PanelsPatternInterface extends PluginInspectionInterface {
    *
    * @return \Drupal\Core\Url
    */
-  public function getBlockEditVisibilityRuleUrl($tempstore_id, $machine_name, $block_id, $destination = NULL);
+  public function getBlockEditAccessUrl($tempstore_id, $machine_name, $block_id, $destination = NULL);
 
 }

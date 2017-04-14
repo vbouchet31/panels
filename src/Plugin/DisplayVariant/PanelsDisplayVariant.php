@@ -9,6 +9,7 @@ namespace Drupal\panels\Plugin\DisplayVariant;
 use Drupal\Component\Render\HtmlEscapedText;
 use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Block\BlockManager;
+use Drupal\Core\Block\BlockPluginInterface;
 use Drupal\Core\Condition\ConditionManager;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -24,9 +25,11 @@ use Drupal\layout_plugin\Plugin\Layout\LayoutPluginManagerInterface;
 use Drupal\panels\Form\LayoutChangeRegions;
 use Drupal\panels\Form\LayoutChangeSettings;
 use Drupal\panels\Form\LayoutPluginSelector;
+use Drupal\panels\PanelsVisibilityRuleManager;
 use Drupal\panels\Plugin\DisplayBuilder\DisplayBuilderInterface;
 use Drupal\panels\Plugin\DisplayBuilder\DisplayBuilderManagerInterface;
 use Drupal\panels\Plugin\PanelsPattern\PanelsPatternInterface;
+use Drupal\panels\Plugin\PanelsVisibilityRule\PanelsVisibilityRuleInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -75,6 +78,13 @@ class PanelsDisplayVariant extends BlockDisplayVariant implements PluginWizardIn
   protected $layout;
 
   /**
+   * The style plugin manager.
+   *
+   * @var \Drupal\panels\Plugin\PanelsVisibilityRule\PanelsVisibilityRuleInterface;
+   */
+  protected $visibilityRuleManager;
+
+  /**
    * Constructs a new PanelsDisplayVariant.
    *
    * @param array $configuration
@@ -102,10 +112,11 @@ class PanelsDisplayVariant extends BlockDisplayVariant implements PluginWizardIn
    * @param \Drupal\layout_plugin\Plugin\Layout\LayoutPluginManagerInterface $layout_manager
    *   The layout plugin manager.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, ContextHandlerInterface $context_handler, AccountInterface $account, UuidInterface $uuid_generator, Token $token, BlockManager $block_manager, ConditionManager $condition_manager, ModuleHandlerInterface $module_handler, DisplayBuilderManagerInterface $builder_manager, LayoutPluginManagerInterface $layout_manager) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, ContextHandlerInterface $context_handler, AccountInterface $account, UuidInterface $uuid_generator, Token $token, BlockManager $block_manager, ConditionManager $condition_manager, ModuleHandlerInterface $module_handler, DisplayBuilderManagerInterface $builder_manager, LayoutPluginManagerInterface $layout_manager, PanelsVisibilityRuleManager $visibility_rule_manager) {
     $this->moduleHandler = $module_handler;
     $this->builderManager = $builder_manager;
     $this->layoutManager = $layout_manager;
+    $this->visibilityRuleManager = $visibility_rule_manager;
 
     parent::__construct($configuration, $plugin_id, $plugin_definition, $context_handler, $account, $uuid_generator, $token, $block_manager, $condition_manager);
   }
@@ -126,7 +137,8 @@ class PanelsDisplayVariant extends BlockDisplayVariant implements PluginWizardIn
       $container->get('plugin.manager.condition'),
       $container->get('module_handler'),
       $container->get('plugin.manager.panels.display_builder'),
-      $container->get('plugin.manager.layout_plugin')
+      $container->get('plugin.manager.layout_plugin'),
+      $container->get('plugin.manager.panels.visibility_rule')
     );
   }
 
@@ -514,6 +526,52 @@ class PanelsDisplayVariant extends BlockDisplayVariant implements PluginWizardIn
       }
     }
     return $data;
+  }
+
+  public function getBlockVisibilityRule(BlockPluginInterface $block, $visibility_rule_id = '') {
+    $block_config = $block->getConfiguration();
+
+    // @TODO: Check if default value is appropriate.
+    $plugin_id = !empty($block_config['visibility_rule']['plugin']) ? $block_config['visibility_rule']['plugin'] : 'panels_default';
+    $plugin_configuration = !empty($block_config['visibility_rule']['configuration']) ? $block_config['visibility_rule']['configuration'] : [];
+
+    if (!empty($visibility_rule_id) && $visibility_rule_id !== $plugin_id) {
+      $plugin_id = $visibility_rule_id;
+      $plugin_configuration = [];
+    }
+
+    return $this->visibilityRuleManager->createInstance($plugin_id, $plugin_configuration);
+  }
+
+  /**
+   * Assigns the visibility rule plugin to use for a block of this variant.
+   *
+   * @param \Drupal\Core\Block\BlockPluginInterface $block
+   *   Block plugin.
+   * @param string|\Drupal\panels\Plugin\PanelsVisibilityRule\PanelsVisibilityRuleInterface $visibility_rule
+   *   The visibility rule plugin object or plugin id.
+   * @param array $visibility_rule_settings
+   *   The visibility rule configuration.
+   *
+   * @return $this
+   *
+   * @throws \Exception
+   *   If $style isn't a PanelsVisibilityRuleInterface object.
+   */
+  public function setBlockVisibilityRule(BlockPluginInterface $block, $visibility_rule, array $visibility_rule_settings = []) {
+    $block_config = $block->getConfiguration();
+
+    if ($visibility_rule instanceof PanelsVisibilityRuleInterface) {
+      $block_config['visibility_rule']['plugin'] = $visibility_rule->getPluginId();
+      $block_config['visibility_rule']['configuration'] = $visibility_rule_settings;
+    }
+    else {
+      throw new \Exception('Visibility rule must be a PanelsVisibilityRuleInterface object');
+    }
+
+    $this->updateBlock($block_config['uuid'], $block_config);
+
+    return $this;
   }
 
 }

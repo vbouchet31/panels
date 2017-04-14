@@ -5,6 +5,9 @@ services:
   plugin.manager.panels.pattern:
     class: Drupal\panels\PanelsPatternManager
     parent: default_plugin_manager
+  plugin.manager.panels.visibility_rule:
+    class: Drupal\panels\Plugin\PanelsVisibilityRule\PanelsVisibilityRuleManager
+    arguments: ['@container.namespaces', '@cache.discovery', '@module_handler']
   panels.display_manager:
     class: Drupal\panels\PanelsDisplayManager
     arguments: ['@plugin.manager.display_variant', '@config.typed']

@@ -92,7 +92,10 @@ class StandardDisplayBuilder extends DisplayBuilderBase implements PluginWizardI
    *   An associative array, keyed by region ID, containing the render arrays
    *   representing the content of each region.
    */
-  protected function buildRegions(array $regions, array $contexts) {
+  protected function buildRegions(PanelsDisplayVariant $panels_display) {
+    $regions = $panels_display->getRegionAssignments();
+    $contexts = $panels_display->getContexts();
+
     $build = [];
     foreach ($regions as $region => $blocks) {
       if (!$blocks) {
@@ -109,7 +112,7 @@ class StandardDisplayBuilder extends DisplayBuilderBase implements PluginWizardI
         if ($block instanceof ContextAwarePluginInterface) {
           $this->contextHandler->applyContextMapping($block, $contexts);
         }
-        if ($block->access($this->account)) {
+        if ($block->access($this->account) && $panels_display->getBlockAccess($block)->access()) {
           $block_render_array = [
             '#theme' => 'block',
             '#attributes' => [],
@@ -159,11 +162,9 @@ class StandardDisplayBuilder extends DisplayBuilderBase implements PluginWizardI
    * {@inheritdoc}
    */
   public function build(PanelsDisplayVariant $panels_display) {
-    $regions = $panels_display->getRegionAssignments();
-    $contexts = $panels_display->getContexts();
     $layout = $panels_display->getLayout();
 
-    $regions = $this->buildRegions($regions, $contexts);
+    $regions = $this->buildRegions($panels_display);
     if ($layout) {
       $regions = $layout->build($regions);
     }

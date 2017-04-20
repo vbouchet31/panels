@@ -27,6 +27,4 @@ class PanelsAccess extends Plugin {
    */
   public $label;
 
-  // @TODO: Define the other data used by the plugin.
-
 }

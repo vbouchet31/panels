@@ -1,23 +1,19 @@
 <?php
 
-/**
- * @file
- */
-
 namespace Drupal\panels\Plugin\PanelsAccess;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\panels\Plugin\PanelsAccess\PanelsAccessBase;
 
 /**
- * The user role control access.
+ * The default control access.
  *
  * @PanelsAccess(
- *   id = "standard",
- *   label = @Translation("Standard")
+ *   id = "default",
+ *   label = @Translation("Default")
  * )
  */
-class StandardPanelsAccess extends PanelsAccessBase {
+class DefaultPanelsAccess extends PanelsAccessBase {
 
   /**
    * {@inheritdoc}

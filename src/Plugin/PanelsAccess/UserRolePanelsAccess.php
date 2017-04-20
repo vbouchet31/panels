@@ -1,9 +1,5 @@
 <?php
 
-/**
- * @file
- */
-
 namespace Drupal\panels\Plugin\PanelsAccess;
 
 use Drupal\Core\Form\FormStateInterface;
@@ -61,4 +57,5 @@ class UserRolePanelsAccess extends PanelsAccessBase {
 
     parent::submitConfigurationForm($form, $form_state);
   }
+
 }

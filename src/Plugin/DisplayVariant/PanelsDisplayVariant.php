@@ -544,7 +544,7 @@ class PanelsDisplayVariant extends BlockDisplayVariant implements PluginWizardIn
   public function getBlockAccess(BlockPluginInterface $block, $access_id = '') {
     $block_config = $block->getConfiguration();
     
-    $plugin_id = !empty($block_config['access']['plugin']) ? $block_config['access']['plugin'] : 'standard';
+    $plugin_id = !empty($block_config['access']['plugin']) ? $block_config['access']['plugin'] : 'default';
     $plugin_configuration = !empty($block_config['access']['configuration']) ? $block_config['access']['configuration'] : [];
 
     if (!empty($access_id) && $access_id !== $plugin_id) {

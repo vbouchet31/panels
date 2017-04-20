@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\panels;
+namespace Drupal\panels\Plugin\PanelsAccess;
 
 use Drupal\Component\Plugin\ConfigurablePluginInterface;
 use Drupal\Component\Plugin\PluginInspectionInterface;
@@ -17,7 +17,7 @@ interface PanelsAccessInterface extends PluginInspectionInterface, ConfigurableP
    * @return bool
    *   TRUE if the widget is visible.
    */
-  public function checkBlockVisibility();
+  public function access();
 
   // @TODO: We can probably add a similar feature to regions.
 

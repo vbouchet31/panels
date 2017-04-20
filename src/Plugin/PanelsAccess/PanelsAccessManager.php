@@ -9,7 +9,7 @@ use Drupal\Core\Plugin\DefaultPluginManager;
 /**
  * Manager for Panels Access plugins.
  */
-class PanelsAccessManager extends DefaultPluginManager {
+class PanelsAccessManager extends DefaultPluginManager implements PanelsAccessManagerInterface {
 
   /**
    * Constructs a new PanelsAccessManager.

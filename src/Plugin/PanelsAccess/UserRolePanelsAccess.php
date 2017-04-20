@@ -18,8 +18,14 @@ use Drupal\Core\Form\FormStateInterface;
  */
 class UserRolePanelsAccess extends PanelsAccessBase {
 
+  /**
+   * {@inheritdoc}
+   */
   public function access() {
-    // @TODO: Manage the access based on the configured roles.
+    if (array_intersect(\Drupal::currentUser()->getRoles(), $this->configuration['roles'])) {
+      return TRUE;
+    }
+
     return FALSE;
   }
 

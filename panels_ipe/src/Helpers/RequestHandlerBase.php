@@ -12,7 +12,6 @@ use Drupal\panels\Plugin\DisplayVariant\PanelsDisplayVariant;
 use Drupal\panels\Storage\PanelsStorageManagerInterface;
 use Drupal\panels_ipe\Exception\EmptyRequestContentException;
 use Drupal\user\SharedTempStore;
-use Drupal\panels_ipe\TempStoreTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -20,8 +19,6 @@ abstract class RequestHandlerBase implements RequestHandlerInterface {
 
   /**
    * @var int */
-
-  use TempStoreTrait;
   private $responseStatusCode = 200;
 
   /**
@@ -120,8 +117,7 @@ abstract class RequestHandlerBase implements RequestHandlerInterface {
    * @throws \Drupal\user\TempStoreException
    */
   protected function savePanelsDisplayToTempStore(PanelsDisplayVariant $panels_display) {
-    $key = $this->getTempStoreId($panels_display);
-    $this->tempStore->set($key, $panels_display->getConfiguration());
+    $this->tempStore->set($panels_display->id(), $panels_display->getConfiguration());
   }
 
   /**
@@ -132,8 +128,7 @@ abstract class RequestHandlerBase implements RequestHandlerInterface {
    * @throws \Drupal\user\TempStoreException
    */
   protected function deletePanelsDisplayTempStore(PanelsDisplayVariant $panels_display) {
-    $key = $this->getTempStoreId($panels_display);
-    $this->tempStore->delete($key);
+    $this->tempStore->delete($panels_display->id());
   }
 
   /**

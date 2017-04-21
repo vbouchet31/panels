@@ -68,4 +68,5 @@ abstract class PanelsAccessBase extends PluginBase implements PanelsAccessInterf
   public function calculateDependencies() {
     return isset($this->configuration['dependencies']) ? $this->configuration['dependencies'] : [];
   }
+
 }

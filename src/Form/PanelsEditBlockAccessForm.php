@@ -30,7 +30,7 @@ class PanelsEditBlockAccessForm extends FormBase {
    *
    * @var string
    */
-  protected $tempstore_id;
+  protected $tempstoreId;
 
   /**
    * The variant plugin.
@@ -78,7 +78,7 @@ class PanelsEditBlockAccessForm extends FormBase {
    * @return string
    */
   protected function getTempstoreId() {
-    return $this->tempstore_id;
+    return $this->tempstoreId;
   }
 
   /**
@@ -101,7 +101,7 @@ class PanelsEditBlockAccessForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $tempstore_id = NULL, $machine_name = NULL, $block_id = NULL) {
-    $this->tempstore_id = $tempstore_id;
+    $this->tempstoreId = $tempstore_id;
     $cached_values = $this->getCachedValues($this->tempstore, $tempstore_id, $machine_name);
     $this->variantPlugin = $cached_values['plugin'];
     $contexts = $this->variantPlugin->getPattern()->getDefaultContexts($this->tempstore, $this->getTempstoreId(), $machine_name);
@@ -195,7 +195,7 @@ class PanelsEditBlockAccessForm extends FormBase {
     $this->getVariantPlugin()->setBlockAccess($block, $this->accessPlugin, $access_configuration);
     $form_state->setValue('access_settings', $access_settings);
 
-    $cached_values = $this->getCachedValues($this->tempstore, $this->tempstore_id, $form_state->get('machine_name'));
+    $cached_values = $this->getCachedValues($this->tempstore, $this->tempstoreId, $form_state->get('machine_name'));
     $cached_values['plugin'] = $this->getVariantPlugin();
 
     // PageManager specific handling.

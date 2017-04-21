@@ -552,10 +552,7 @@ class PanelsDisplayVariant extends BlockDisplayVariant implements PluginWizardIn
       $plugin_configuration = [];
     }
 
-    // @TODO: Find why dependency injection does not work.
-    //return $this->accessManager->createInstance($plugin_id, $plugin_configuration);
-    $accessManager = \Drupal::service('plugin.manager.panels.access');
-    return $accessManager->createInstance($plugin_id, $plugin_configuration);
+    return $this->accessManager->createInstance($plugin_id, $plugin_configuration);
   }
 
   /**

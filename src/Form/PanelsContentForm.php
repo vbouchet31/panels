@@ -208,6 +208,11 @@ class PanelsContentForm extends FormBase {
             'url' => $pattern_plugin->getBlockEditUrl($this->tempstore_id, $machine_name, $block_id, $this->getRequest()->getRequestUri()),
             'attributes' => $attributes,
           ];
+          $operations['access'] = [
+            'title' => $this->t('Visibility rules'),
+            'url' => $pattern_plugin->getBlockEditAccessUrl($this->tempstore_id, $machine_name, $block_id, $this->getRequest()->getRequestUri()),
+            'attributes' => $attributes,
+          ];
           $operations['delete'] = [
             'title' => $this->t('Delete'),
             'url' => $pattern_plugin->getBlockDeleteUrl($this->tempstore_id, $machine_name, $block_id, $this->getRequest()->getRequestUri()),

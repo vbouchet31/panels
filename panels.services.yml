@@ -8,6 +8,9 @@ services:
   panels.display_manager:
     class: Drupal\panels\PanelsDisplayManager
     arguments: ['@plugin.manager.display_variant', '@config.typed']
+  plugin.manager.panels.visibility_rule:
+    class: Drupal\panels\Plugin\PanelsVisibilityRule\PanelsVisibilityRuleManager
+    parent: default_plugin_manager
   panels.storage_manager:
     class: Drupal\panels\Storage\PanelsStorageManager
     arguments: ['@container.namespaces', '@cache.discovery', '@module_handler', '@current_user']

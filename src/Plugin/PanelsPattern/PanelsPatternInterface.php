@@ -99,4 +99,20 @@ interface PanelsPatternInterface extends PluginInspectionInterface {
    */
   public function getBlockDeleteUrl($tempstore_id, $machine_name, $block_id, $destination = NULL);
 
+  /**
+   * Gets the block edit access url.
+   *
+   * @param string $tempstore_id
+   *   The tempstore identifier.
+   * @param string $machine_name
+   *   The tempstore key.
+   * @param string $block_id
+   *   The unique id of the block in this panel.
+   * @param string $destination
+   *   The destination to which to redirect after submission.
+   *
+   * @return \Drupal\Core\Url
+   */
+  public function getBlockEditAccessUrl($tempstore_id, $machine_name, $block_id, $destination = NULL);
+
 }

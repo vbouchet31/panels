@@ -72,6 +72,7 @@
       this.listenTo(this.model, 'changeLayout', this.changeLayout);
       this.listenTo(this.model, 'addBlockPlugin', this.addBlockPlugin);
       this.listenTo(this.model, 'configureBlock', this.configureBlock);
+      this.listenTo(this.model, 'configureBlockAccess', this.configureBlockAccess);
       this.listenTo(this.model, 'addContentBlock', this.addContentBlock);
       this.listenTo(this.model, 'editContentBlock', this.editContentBlock);
       this.listenTo(this.model, 'editContentBlockDone', this.editContentBlockDone);
@@ -310,6 +311,37 @@
       };
 
       this.loadBlockForm(info);
+    },
+
+    /**
+     * Opens the Manage Content tray when configuring access of existing Block.
+     *
+     * @param {Drupal.panels_ipe.BlockModel} block
+     *   The Block that needs to have its access form opened.
+     */
+    configureBlockAccess: function (block) {
+      var info = {
+        url: Drupal.panels_ipe.urlRoot(drupalSettings) + '/block_plugins/' + block.get('id') + '/block/' + block.get('uuid') + '/access/form',
+        model: block
+      };
+
+      // @TODO: We probably need to load a different tab.
+      // We're going to open the manage content tab, which may take time to
+      // render. Load the Block edit form on render.
+      var manage_content = this.tabsView.tabViews['manage_content'];
+      manage_content.on('render', function () {
+        manage_content.loadForm(info);
+
+        // We only need this event to trigger once.
+        manage_content.off('render', null, this);
+      }, this);
+
+      // Disable the active category to avoid confusion.
+      manage_content.activeCategory = null;
+
+      this.tabsView.switchTab('manage_content');
+
+      //this.loadBlockForm(info);
     },
 
     /**

@@ -358,6 +358,41 @@ class PanelsIPEPageController extends ControllerBase {
   }
 
   /**
+   * Drupal AJAX compatible route for rendering given Block Plugin access form.
+   *
+   * @param string $panels_storage_type
+   *   The id of the storage plugin.
+   * @param string $panels_storage_id
+   *   The id within the storage plugin for the requested Panels display.
+   * @param string $plugin_id
+   *   The requested Block Plugin ID.
+   * @param string $block_uuid
+   *   The Block UUID, if this is an existing Block.
+   *
+   * @return Response
+   */
+  public function getBlockPluginAccessForm($panels_storage_type, $panels_storage_id, $plugin_id, $block_uuid = NULL) {
+    $panels_display = $this->loadPanelsDisplay($panels_storage_type, $panels_storage_id);
+
+    // Get the configuration in the block plugin definition.
+    $definitions = $this->blockManager->getDefinitionsForContexts($panels_display->getContexts());
+
+    // Check if the block plugin is defined.
+    if (!isset($definitions[$plugin_id])) {
+      throw new NotFoundHttpException();
+    }
+
+    // Build a Block Plugin configuration form.
+    $form = $this->formBuilder()->getForm('Drupal\panels_ipe\Form\PanelsIPEBlockPluginAccessForm', $plugin_id, $panels_display, $block_uuid);
+
+    // Return the rendered form as a proper Drupal AJAX response.
+    $response = new AjaxResponse();
+    $command = new AppendCommand('.ipe-block-form', $form);
+    $response->addCommand($command);
+    return $response;
+  }
+
+  /**
    * Gets a list of Block Content Types from the server.
    *
    * @param string $panels_storage_type

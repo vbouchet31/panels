@@ -57,6 +57,7 @@
       'click [data-action-id="down"]': 'moveBlock',
       'click [data-action-id="remove"]': 'removeBlock',
       'click [data-action-id="configure"]': 'configureBlock',
+      'click [data-action-id="access"]': 'configureBlockAccess',
       'click [data-action-id="edit-content-block"]': 'editContentBlock',
       'drop .ipe-droppable': 'dropBlock'
     },
@@ -437,6 +438,24 @@
 
       // Send an App-level event so our BlockPicker View can display a Form.
       Drupal.panels_ipe.app.trigger('configureBlock', region.getBlock(id));
+    },
+
+    /**
+     * Configures access of an existing (on screen) Block.
+     *
+     * @param {Object} e
+     *   The event object.
+     */
+    configureBlockAccess: function (e) {
+      // Get the BlockModel id (uuid).
+      var id = this.getEventBlockUuid(e);
+
+      // Grab the model for this region.
+      var region_name = $(e.currentTarget).closest('[data-region-name]').data('region-name');
+      var region = this.model.get('regionCollection').get(region_name);
+
+      // Send an App-level event so our BlockPicker View can display a Form.
+      Drupal.panels_ipe.app.trigger('configureBlockAccess', region.getBlock(id));
     },
 
     /**

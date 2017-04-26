@@ -32,6 +32,14 @@ panels_ipe.block_plugin_existing.form:
   requirements:
     _panels_storage_access: read
     _permission: 'access panels in-place editing'
+    
+panels_ipe.block_access.form:
+  path: '/admin/panels_ipe/variant/{panels_storage_type}/{panels_storage_id}/block_plugins/{plugin_id}/block/{block_uuid}/access/form'
+  defaults:
+    _controller: '\Drupal\panels_ipe\Controller\PanelsIPEPageController::getBlockPluginAccessForm'
+  requirements:
+    _panels_storage_access: read
+    _permission: 'access panels in-place editing'
 
 panels_ipe.remove_block:
   path: '/admin/panels_ipe/variant/{panels_storage_type}/{panels_storage_id}/remove_block'

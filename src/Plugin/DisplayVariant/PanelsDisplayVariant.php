@@ -9,6 +9,7 @@ namespace Drupal\panels\Plugin\DisplayVariant;
 use Drupal\Component\Render\HtmlEscapedText;
 use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Block\BlockManager;
+use Drupal\Core\Block\BlockPluginInterface;
 use Drupal\Core\Condition\ConditionManager;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -26,6 +27,8 @@ use Drupal\panels\Form\LayoutChangeSettings;
 use Drupal\panels\Form\LayoutPluginSelector;
 use Drupal\panels\Plugin\DisplayBuilder\DisplayBuilderInterface;
 use Drupal\panels\Plugin\DisplayBuilder\DisplayBuilderManagerInterface;
+use Drupal\panels\Plugin\PanelsAccess\PanelsAccessInterface;
+use Drupal\panels\Plugin\PanelsAccess\PanelsAccessManagerInterface;
 use Drupal\panels\Plugin\PanelsPattern\PanelsPatternInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -75,6 +78,13 @@ class PanelsDisplayVariant extends BlockDisplayVariant implements PluginWizardIn
   protected $layout;
 
   /**
+   * The access plugin.
+   *
+   * @var \Drupal\panels\Plugin\PanelsAccess\PanelsAccessManagerInterface
+   */
+  protected $accessManager;
+
+  /**
    * Constructs a new PanelsDisplayVariant.
    *
    * @param array $configuration
@@ -101,11 +111,14 @@ class PanelsDisplayVariant extends BlockDisplayVariant implements PluginWizardIn
    *   The display builder plugin manager.
    * @param \Drupal\layout_plugin\Plugin\Layout\LayoutPluginManagerInterface $layout_manager
    *   The layout plugin manager.
+   * @param \Drupal\panels\Plugin\PanelsAccess\PanelsAccessManagerInterface $access_manager
+   *   The access plugin manager.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, ContextHandlerInterface $context_handler, AccountInterface $account, UuidInterface $uuid_generator, Token $token, BlockManager $block_manager, ConditionManager $condition_manager, ModuleHandlerInterface $module_handler, DisplayBuilderManagerInterface $builder_manager, LayoutPluginManagerInterface $layout_manager) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, ContextHandlerInterface $context_handler, AccountInterface $account, UuidInterface $uuid_generator, Token $token, BlockManager $block_manager, ConditionManager $condition_manager, ModuleHandlerInterface $module_handler, DisplayBuilderManagerInterface $builder_manager, LayoutPluginManagerInterface $layout_manager, PanelsAccessManagerInterface $access_manager) {
     $this->moduleHandler = $module_handler;
     $this->builderManager = $builder_manager;
     $this->layoutManager = $layout_manager;
+    $this->accessManager = $access_manager;
 
     parent::__construct($configuration, $plugin_id, $plugin_definition, $context_handler, $account, $uuid_generator, $token, $block_manager, $condition_manager);
   }
@@ -126,7 +139,8 @@ class PanelsDisplayVariant extends BlockDisplayVariant implements PluginWizardIn
       $container->get('plugin.manager.condition'),
       $container->get('module_handler'),
       $container->get('plugin.manager.panels.display_builder'),
-      $container->get('plugin.manager.layout_plugin')
+      $container->get('plugin.manager.layout_plugin'),
+      $container->get('plugin.manager.panels.access')
     );
   }
 
@@ -514,6 +528,66 @@ class PanelsDisplayVariant extends BlockDisplayVariant implements PluginWizardIn
       }
     }
     return $data;
+  }
+
+  /**
+   * Return the panels access plugin to use for the block.
+   *
+   * @param \Drupal\Core\Block\BlockPluginInterface $block
+   *   Block plugin
+   * @param string $access_id
+   *   The plugin id of the access requested.
+   *
+   * @return \Drupal\panels\Plugin\PanelsAccess\PanelsAccessInterface
+   *   The access plugin.
+   */
+  public function getBlockAccess(BlockPluginInterface $block, $access_id = '') {
+    $block_config = $block->getConfiguration();
+    
+    $plugin_id = !empty($block_config['access']['plugin']) ? $block_config['access']['plugin'] : 'default';
+    $plugin_configuration = !empty($block_config['access']['configuration']) ? $block_config['access']['configuration'] : [];
+
+    if (!empty($access_id) && $access_id !== $plugin_id) {
+      $plugin_id = $access_id;
+      $plugin_configuration = [];
+    }
+
+    return $this->accessManager->createInstance($plugin_id, $plugin_configuration);
+  }
+
+  /**
+   * Assign the access plugin to use for a block of this variant.
+   *
+   * @param \Drupal\Core\Block\BlockPluginInterface $block
+   *   Block plugin
+   * @param string|\Drupal\panels\Plugin\PanelsAccess\PanelsAccessInterface $access
+   *   The access plugin object or plugin id.
+   * @param array $access_settings
+   *   The access configuration.
+   *
+   * @return $this
+   *
+   * @throws \Exception
+   *   If $access is not a string or PanelsAccessInterface object.
+   */
+  public function setBlockAccess(BlockPluginInterface $block, $access, array $access_settings = []) {
+    $block_config = $block->getConfiguration();
+    
+    if ($access instanceof PanelsAccessInterface) {
+      $block_config['access']['plugin'] = $access->getPluginId();
+      $block_config['access']['configuration'] = $access_settings;
+    }
+    elseif (is_string($access)) {
+      $block_config['access']['plugin'] = $access;
+      $block_config['acess']['configuration'] = $access_settings;
+    }
+    else {
+      throw new \Exception('Access must be a PanelsAccessInterface object');
+    }
+
+    $this->updateBlock($block_config['uuid'], $block_config);
+
+    return $this;
   }
 
 }

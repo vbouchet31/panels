@@ -33,6 +33,9 @@
       '    <li data-action-id="configure">' +
       '      <a><span class="ipe-icon ipe-icon-configure"></span></a>' +
       '    </li>' +
+      '    <li data-action-id="access">' +
+      '      <a><span class="ipe-icon ipe-icon-configure"></span></a>' +
+      '    </li>' +
       '<% if (plugin_id === "block_content" && edit_access) { %>' +
       '    <li data-action-id="edit-content-block">' +
       '      <a><span class="ipe-icon ipe-icon-edit"></span></a>' +
